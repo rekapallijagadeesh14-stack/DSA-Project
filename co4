@@ -1,0 +1,78 @@
+class Delivery {
+    int over;
+    int ball;
+
+    Delivery(int over, int ball) {
+        this.over = over;
+        this.ball = ball;
+    }
+}
+
+public class StableCountingSort {
+
+    static void countingSortBall(Delivery[] arr) {
+        int n = arr.length;
+        Delivery[] output = new Delivery[n];
+        int[] count = new int[7]; // Balls 1-6
+
+        for (Delivery d : arr)
+            count[d.ball]++;
+
+        for (int i = 1; i < count.length; i++)
+            count[i] += count[i - 1];
+
+        for (int i = n - 1; i >= 0; i--) {
+            output[count[arr[i].ball] - 1] = arr[i];
+            count[arr[i].ball]--;
+        }
+
+        System.arraycopy(output, 0, arr, 0, n);
+    }
+
+    static void countingSortOver(Delivery[] arr) {
+        int n = arr.length;
+        Delivery[] output = new Delivery[n];
+
+        int maxOver = 0;
+        for (Delivery d : arr)
+            maxOver = Math.max(maxOver, d.over);
+
+        int[] count = new int[maxOver + 1];
+
+        for (Delivery d : arr)
+            count[d.over]++;
+
+        for (int i = 1; i < count.length; i++)
+            count[i] += count[i - 1];
+
+        for (int i = n - 1; i >= 0; i--) {
+            output[count[arr[i].over] - 1] = arr[i];
+            count[arr[i].over]--;
+        }
+
+        System.arraycopy(output, 0, arr, 0, n);
+    }
+
+    public static void main(String[] args) {
+
+        Delivery[] deliveries = {
+            new Delivery(2, 4),
+            new Delivery(1, 3),
+            new Delivery(1, 1),
+            new Delivery(2, 1),
+            new Delivery(1, 6),
+            new Delivery(2, 2)
+        };
+
+        // LSD Approach
+        countingSortBall(deliveries);
+        countingSortOver(deliveries);
+
+        System.out.println("Sorted Cricket Deliveries:");
+
+        for (Delivery d : deliveries) {
+            System.out.println("Over " + d.over +
+                               " Ball " + d.ball);
+        }
+    }
+}
