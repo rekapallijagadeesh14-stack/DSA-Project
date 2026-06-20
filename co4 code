@@ -1,0 +1,66 @@
+class BellmanFord {
+
+    static class Edge {
+        int source, destination, weight;
+
+        Edge(int s, int d, int w) {
+            source = s;
+            destination = d;
+            weight = w;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        int vertices = 7;
+
+        Edge[] edges = {
+            new Edge(0, 1, 6),   // MJC -> KRM
+            new Edge(0, 2, 5),   // MJC -> YLH
+            new Edge(0, 3, 5),   // MJC -> BTM
+            new Edge(1, 4, -1),  // KRM -> WHF
+            new Edge(2, 1, -2),  // YLH -> KRM
+            new Edge(2, 4, 1),   // YLH -> WHF
+            new Edge(3, 2, -2),  // BTM -> YLH
+            new Edge(3, 5, -1),  // BTM -> MRT
+            new Edge(4, 6, 3),   // WHF -> ECY
+            new Edge(5, 6, 3),   // MRT -> ECY
+            new Edge(4, 5, -3)   // WHF -> MRT (Dedicated Bus Lane)
+        };
+
+        int source = 0; // MJC
+
+        int[] distance = new int[vertices];
+
+        for (int i = 0; i < vertices; i++)
+            distance[i] = Integer.MAX_VALUE;
+
+        distance[source] = 0;
+
+        // Bellman-Ford Relaxation
+        for (int i = 1; i < vertices; i++) {
+            for (Edge edge : edges) {
+
+                if (distance[edge.source] != Integer.MAX_VALUE &&
+                    distance[edge.source] + edge.weight < distance[edge.destination]) {
+
+                    distance[edge.destination] =
+                        distance[edge.source] + edge.weight;
+                }
+            }
+        }
+
+        String[] hubs = {
+            "MJC", "KRM", "YLH", "BTM",
+            "WHF", "MRT", "ECY"
+        };
+
+        System.out.println("Shortest Travel Times from MJC:");
+
+        for (int i = 0; i < vertices; i++) {
+            System.out.println(
+                hubs[i] + " = " + distance[i] + " minutes"
+            );
+        }
+    }
+}
